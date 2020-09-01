@@ -2,7 +2,7 @@
 
 Extract drummer patterns from GarageBand to MIDI, natively on iOS.
 
-Tested on an iPad 7th gen with iOS 13 and latest GB, as of Aug 29th 2020.  It might work elsewhere.
+Tested on an iPad 7th gen with iOS 13 and latest GB, as of Aug 29th 2020.  It might work elsewhere.  Also tested outside of Pythonista on Linux using Python 3.7.
 
 The following drum sources should be parseable (Accoustic and Electronic):
 
@@ -25,13 +25,13 @@ One MIDI file per "part" of drum data is created.  This means that there may be 
 
 ## Usage instructions
 
-1. Install http://omz-software.com/pythonista/ from the iOS app store.  Yes it costs money and there may be other lower cost/free options but that is what I use.  There is not a lot of code that would need to be changed to get this running on the desktop so that might be an option for you.
+1. Install http://omz-software.com/pythonista/ from the iOS app store.  Yes it costs money and there may be other lower cost/free options but that is what I use.  Alternatively, find a desktop machine with Python 3 installed.  The script has been tested to run using Python 3.7.
 1. Grab gbextractor.py script
-1. Load the script into Pythonista. **IMPORTANT** You must copy to and run the script from the Pythonista folder, i.e. somewhere under iCloud Drive/Pythonista 3, otherwise you will not have permission to write the MIDI data.
+1. (Pythonista only) Load the script into Pythonista. **IMPORTANT** You must copy to and run the script from the Pythonista folder, i.e. somewhere under iCloud Drive/Pythonista 3, otherwise you will not have permission to write the MIDI data.
 1. Install packages "bitstring" and "MIDIUtil", e.g. "pip install packageName" from https://github.com/ywangd/stash
-1. Run the script.  You will be presented with an iOS file picker which you should use to select your GarageBand project file.
+1. Run the script.  On Pythonista you will be presented with an iOS file picker which you should use to select your GarageBand project file.  Outside of Pythonista you should provide a single argument to the script which is the GB project directory, e.g. ```python3.7 ~/gbextractor.py ~/MySong.band```
 1. With luck, the script will complete with "File processing complete"
-1. A directory will be created in the same directory as the gbextractor.py script containing MIDI representations of the drum tracks that were found in the GB project.
+1. A directory will be created containing MIDI representations of the drum tracks that were found in the GB project.  For Pythonista, this will be in the same directory as the gbextractor.py script and outside of Pythonista the directory will be created in the current working directory.
 
 ## Troubleshooting
 
@@ -44,7 +44,12 @@ Normally, fixing problems will entail changing the code in the `while` loop to s
 ## Ideas for future extensions
 
 * Per instrument stem output, e.g. separate MIDI file for kick drums.
-* Make script usable with either Pythonista or desktop Python
 * Let user choose how to remap GB note values
 * Allow a single MIDI file to contain multiple sections as they appear in GB rather than splitting them up into separate files
 * Add general MIDI support
+
+## Change history
+
+* v1.1 Script can be run outside of Pythonista using Python 3.x (tested with 3.7)
+* v1.0 Initial release
+

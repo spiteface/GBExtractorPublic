@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# GarageBand drum extractor gbextractor v1.0 29 Aug 2020
+# GarageBand drum extractor gbextractor v1.1 1st Sept 2020
 # Copyright (C) 2020 MisplacedDevelopment 
 # See LICENSE for license information (Apache 2)
 
@@ -9,12 +9,9 @@
 # MIDIUtil (1.2.1) - A pure python library for creating multi-track MIDI files. https://github.com/MarkCWirt/MIDIUtil
 
 import xml.etree.ElementTree as ET
-import dialogs
 import os
 import base64
 import sys
-import console
-from enum import Enum
 from bitstring import ConstBitStream
 import time
 import string
@@ -23,7 +20,19 @@ from midiutil import MIDIFile
 bWriteToFile = False
 bDebug = False
 recordHash = dict()
+bIsPythonista = True
 
+try:
+  import dialogs
+  import console
+except:
+  bIsPythonista = False    
+
+if bIsPythonista:
+  if bDebug: print("Running inside of Pythonista")
+else:
+  if bDebug: print("Running outside of Pythonista")
+  
 WORKING_DIR = "GB_Extract_" + time.strftime("%Y%m%d-%H%M%S")
 TEMPO_OFFSET = 0x550
 TIME_SIGNATURE_OFFSET = 0x7D0
@@ -31,8 +40,6 @@ BASE_TIME = 0x9600
 VALID_BLOCKS = [b"\x2e\x03\x41",
                 b"\x3c\x03\x41", 
                 b"\x64\x03\x41"]
-
-MIDIEventType = Enum('MIDIEventType', 'NOTE_ON NOTE_OFF')
 
 canBePrinted = bytes(string.ascii_letters + string.digits + string.punctuation, 'ascii')
 
@@ -45,8 +52,7 @@ class MIDISection:
     self.recordNumber = recordNumber
 
 class MIDIEvent:
-  def __init__(self, type, time, velocity, note, articulation, offMode):
-    self.type = type
+  def __init__(self, time, velocity, note, articulation, offMode):
     self.time = time
     self.note = note
     self.velocity = velocity
@@ -54,7 +60,8 @@ class MIDIEvent:
     
 def quitWithError(errorString):
   print(errorString)
-  console.hud_alert(errorString, 'error', 2)
+  if bIsPythonista:
+    console.hud_alert(errorString, 'error', 2)
   sys.exit(1)
 
 def dumphex(dataLength, s):
@@ -78,7 +85,6 @@ def dumphex(dataLength, s):
     hexDump += "0x{:08X} | {:48}| {:16} |\n".format(lineOffset, hexString, asciiString)
   s.pos = originalPosition
   print(hexDump)
-  
 
 if bDebug: print("Creating working directory {} in {}".format(WORKING_DIR, os.getcwd()))
 
@@ -95,8 +101,14 @@ if bWriteToFile:
   newStdout = open("GB_Extract_Log.txt", 'w')
   sys.stdout = newStdout
 
-# Show iOS file picker to select GB file
-fp = dialogs.pick_document(types=["public.item"])
+if bIsPythonista: 
+  # Show iOS file picker to select GB file
+  fp = dialogs.pick_document(types=["public.item"])
+else:
+  if(len(sys.argv) == 2):
+    fp = sys.argv[1]
+  else:
+    quitWithError("ERROR: Expects a single argument which is the path to the GB project.band directory")
 
 if (fp != None):
   pathToGBFile = os.path.join(fp, "projectData")
@@ -219,7 +231,7 @@ for thisOffset in sorted_offset_list:
             quitWithError("ERROR: Outstanding MIDI event not written")
 
           # Record the midiEvent based on the set of bytes read in for this note ON 
-          midiEvent = MIDIEvent(MIDIEventType.NOTE_ON, *s.readlist('pad:24, uintle:32, pad:24, uintle:8, uintle:8, pad:8, uintle:16, uintle:16, pad:40'))
+          midiEvent = MIDIEvent(*s.readlist('pad:24, uintle:32, pad:24, uintle:8, uintle:8, pad:8, uintle:16, uintle:16, pad:40'))
         elif (midiCmd == 0x89): # Set note duration event
           # 0x00000580 | 40 00 00 00 00 00 00 89 00 00 00 00 F0 00 00 00 | @...............
           # 0x00000590 | 00 00 00 00 00 00 00 A7 00 00 00 00 00 00 00 00 | ................
@@ -307,4 +319,7 @@ if bWriteToFile:
   newStdout.close()
   sys.stdout = origStdout
 
-console.hud_alert("File processing complete",'success', 1)
+if bIsPythonista:
+  console.hud_alert("File processing complete",'success', 1)
+else:
+  print("File processing complete")
