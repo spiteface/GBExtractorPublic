@@ -39,7 +39,8 @@ TIME_SIGNATURE_OFFSET = 0x7D0
 BASE_TIME = 0x9600
 VALID_BLOCKS = [b"\x2e\x03\x41",
                 b"\x3c\x03\x41", 
-                b"\x64\x03\x41"]
+                b"\x64\x03\x41",
+                b"\x2e\x03\x01"]
 
 canBePrinted = bytes(string.ascii_letters + string.digits + string.punctuation, 'ascii')
 
@@ -270,13 +271,14 @@ for thisOffset in sorted_offset_list:
           # 0x00000740 | 08 00 03 03 00 00 00 A8 00 00 00 00 01 00 1C 00 | ................
           # 0x00000750 | 90 00 00 00 10 B3 00 00 00 00 00 7B 24 00 00 00 | ...........{$...
           s.read("bytes:8")
-        elif (midiCmd >= 0x70 and midiCmd <= 0x7F):
+        #elif (midiCmd >= 0x70 and midiCmd <= 0x7F):
           # 0x7x appears to be some kind of state reset at the start of a block, possibly for looping purposes
-          s.read("bytes:31")
+         # s.read("bytes:31")
         elif (midiCmd == 0xF1):
           if bDebug: print("End of buffer")
           break
         elif ((midiCmd >= 0x30 and midiCmd <= 0x3F) or 
+              (midiCmd >= 0x70 and midiCmd <= 0x7F) or
                midiCmd == 0x60 or 
                midiCmd == 0x11 or 
                midiCmd == 0x12):
