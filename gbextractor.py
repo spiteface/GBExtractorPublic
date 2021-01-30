@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# GarageBand drum extractor gbextractor v1.1 1st Sept 2020
+# GarageBand drum extractor gbextractor v1.3 30 Jan 2021
 # Copyright (C) 2020 MisplacedDevelopment 
 # See LICENSE for license information (Apache 2)
 
