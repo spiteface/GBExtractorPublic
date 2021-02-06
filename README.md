@@ -30,7 +30,7 @@ Tested on an iPad Air 2020 with iOS 14.4 and latest GB, as of Feb 6th 2020.
 One MIDI file per section of GB data is created.  This means that there may be multiple MIDI files created per GB track.  The naming of the MIDI files should suggest some kind of ordering but you can rename the sections to make it clearer.
 
 ### Playing back MIDI in GB
-The easiest way I have found of playing back MIDI into GB after it has been extracted is to use [AudioBus](https://audiob.us) to create a virtual port and then point the MIDI sequencer at that.  If GB is running and the appropriate instrument is open then you should hear the MIDI playing though GB, subject to the restrictions discussed in the [Limitations] section.
+The easiest way I have found of playing back MIDI into GB after it has been extracted is to use [AudioBus](https://audiob.us) to create a virtual port and then point the MIDI sequencer at that.  If GB is running and the appropriate instrument is open then you should hear the MIDI playing though GB, subject to the restrictions discussed in the Limitations section.
 
 ## Drum stems
 If you prefer to process certain parts of a drum kit separately, e.g. by adding compression to a kick drum, then you may benefit from the ability of the tool to assign every note to a separate track.  By default all notes are added to a single track but if the `bUniqueTracks` Boolean is set to `True` then every note will be assigned to a unique track.
